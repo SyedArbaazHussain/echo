@@ -1,6 +1,6 @@
 [versions]
 agp = "8.12.0"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 
 androidx-paging = "3.3.6"
 room = "2.7.2"
@@ -15,26 +15,26 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 
 androidx-core-google-shortcuts = { module = "androidx.core:core-google-shortcuts", version = "1.1.0" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.17.0" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
 androidx-activity = { group = "androidx.activity", name = "activity", version = "1.10.1" }
 
-protobuf-java = { module = "com.google.protobuf:protobuf-java", version = "4.31.1" }
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version = "4.32.0" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.4.0" }
 swiperefresh = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version = "1.1.0" }
 
-fragment = { module = "androidx.fragment:fragment-ktx", version = "1.8.8" }
+fragment = { module = "androidx.fragment:fragment-ktx", version = "1.8.9" }
 
 splashscreen = { module = "androidx.core:core-splashscreen", version = "1.0.1" }
 palette = { module = "androidx.palette:palette-ktx", version = "1.0.0" }
+material = { group = "com.google.android.material", name = "material", version = "1.14.0-alpha03" }
 
 preference = { module = "androidx.preference:preference-ktx", version = "1.2.1" }
 
 paging-common = { module = "androidx.paging:paging-common-ktx", version.ref = "androidx-paging" }
 paging-runtime = { module = "androidx.paging:paging-runtime-ktx", version.ref = "androidx-paging" }
 
-
-material = { group = "com.google.android.material", name = "material", version = "1.14.0-alpha03" }
+filekache = { module = "com.mayakapps.kache:file-kache", version = "2.1.1" }
 
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx" }
@@ -85,6 +85,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version = "2.2.0-2.0.2" }
+ksp = { id = "com.google.devtools.ksp", version = "2.2.10-2.0.2" }
 gms = { id = "com.google.gms.google-services", version = "4.4.3" }
 crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.6" }

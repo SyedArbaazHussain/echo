@@ -20,6 +20,7 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.acsbendi.requestinspectorwebview.RequestInspectorWebViewClient
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import dev.brahmkshatriya.echo.R
 import dev.brahmkshatriya.echo.common.helpers.WebViewRequest
 import dev.brahmkshatriya.echo.common.models.Message
@@ -54,6 +55,7 @@ object WebViewUtils {
     @SuppressLint("SetJavaScriptEnabled")
     fun <T> FragmentActivity.configure(
         webView: WebView,
+        progress: LinearProgressIndicator,
         target: WebViewRequest<T>,
         skipTimeout: Boolean,
         onComplete: suspend (Result<T>?) -> Unit
@@ -77,7 +79,7 @@ object WebViewUtils {
                 isAlgorithmicDarkeningAllowed = true
         }
         runCatching {
-            webView.load(lifecycleScope, callback, target, skipTimeout, onComplete)
+            webView.load(lifecycleScope, progress, callback, target, skipTimeout, onComplete)
         }.getOrElse {
             lifecycleScope.launch {
                 webView.stop(callback)
@@ -89,12 +91,14 @@ object WebViewUtils {
 
     private fun <T> WebView.load(
         scope: CoroutineScope,
+        progress: LinearProgressIndicator,
         callback: OnBackPressedCallback,
         target: WebViewRequest<T>,
         skipTimeout: Boolean,
         onComplete: suspend (Result<T>?) -> Unit
     ) {
         val stopRegex = target.stopUrlRegex
+        val interceptRegex = if (target is WebViewRequest.Headers) target.interceptUrlRegex else null
         val timeout = target.maxTimeout
         val bridge = Bridge()
         val requests = mutableListOf<NetworkRequest>()
@@ -116,6 +120,8 @@ object WebViewUtils {
 
             var done = false
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                progress.show()
                 if (target !is WebViewRequest.Evaluate) return
                 if (done) return
                 target.javascriptToEvaluateOnPageStart?.let { js ->
@@ -128,11 +134,19 @@ object WebViewUtils {
                 }
             }
 
+            override fun onPageFinished(view: WebView?, url: String?) {
+                progress.hide()
+            }
+
             val mutex = Mutex()
             fun intercept(
                 request: NetworkRequest
             ) {
-                if (target is WebViewRequest.Headers) requests.add(request)
+                if (target is WebViewRequest.Headers) {
+                    if (interceptRegex == null || interceptRegex.matches(request.url)) {
+                        requests.add(request)
+                    }
+                }
                 if (stopRegex.find(request.url) == null) return
                 done = true
                 timeoutJob?.cancel()
@@ -298,7 +312,7 @@ object WebViewUtils {
                 removeSelf()
                 return
             }
-            val callback = requireActivity().configure(binding.root, wrapper.request, false) {
+            val callback = requireActivity().configure(binding.webview, binding.progress, wrapper.request, false) {
                 webViewClient.responseFlow.emit(wrapper to it)
                 if (it == null) runCatching { removeSelf() }
             }
